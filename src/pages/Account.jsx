@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Dialog, Switch } from '@headlessui/react'
 import { Bars3Icon } from '@heroicons/react/20/solid'
+import { useUser } from '../../context/authContext'
 import {
   BellIcon,
   CreditCardIcon,
@@ -33,10 +34,11 @@ function classNames(...classes) {
 export default function Account() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
+  const { user } = useUser()
 
   return (
     <>
-      <header className="absolute inset-x-0 top-0 z-50 flex h-16 border-b border-gray-900/10">
+      {/* <header className="absolute inset-x-0 top-0 z-50 flex h-16 border-b border-gray-900/10">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex flex-1 items-center gap-x-6">
             <button type="button" className="-m-3 p-3 md:hidden" onClick={() => setMobileMenuOpen(true)}>
@@ -103,7 +105,7 @@ export default function Account() {
             </div>
           </Dialog.Panel>
         </Dialog>
-      </header>
+      </header> */}
 
       <div className="mx-auto max-w-7xl pt-16 lg:flex lg:gap-x-16 lg:px-8">
         <h1 className="sr-only">General Settings</h1>
@@ -149,7 +151,7 @@ export default function Account() {
                 <div className="pt-6 sm:flex">
                   <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Full name</dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">Tom Cook</div>
+                    <div className="text-gray-900">{user.displayName}</div>
                     <button type="button" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Update
                     </button>
@@ -158,7 +160,7 @@ export default function Account() {
                 <div className="pt-6 sm:flex">
                   <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Email address</dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">tom.cook@example.com</div>
+                    <div className="text-gray-900">{user.email}</div>
                     <button type="button" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Update
                     </button>

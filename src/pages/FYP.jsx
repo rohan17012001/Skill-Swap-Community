@@ -1,7 +1,13 @@
+import Posts from "./Post";
 import React from "react";
 import { Link } from "react-router-dom";
-import Posts from "./Post";
 import { useState, useEffect } from "react";
+import { format, parseISO } from 'date-fns';
+// import { useUser } from "../../context/authContext/index.jsx";
+import { faCommentDots, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Post from "../components/Post.jsx";
+import { useUser } from "../../context/authContext/index.jsx";
 
 const posts = [
   {
@@ -24,24 +30,43 @@ const posts = [
   // More posts...
 ];
 
+function parseDate(datestr){
+  const dateObj = new Date(datestr);
+
+  const date = dateObj.toISOString().split('T')[0];
+  const time = dateObj.toISOString().split('T')[1].split('.')[0];
+  return { date, time }
+}
+
 export default function Fyp() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     getposts();
   }, []);
+  const idtoken = localStorage.getItem("token");
+  // console.log(idtoken)
   let getposts = async () => {
-    let response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      // mode: 'cors',
-      credentials: "include",
+    let response = await fetch("http://localhost:8000/post/", {
+      mode: 'cors',
+      // credentials: "include",
       method: "GET",
       headers: {
+        "Authorization": `Token ${idtoken}`,
         "Content-Type": "application/json",
       },
     });
+    // let response = await axios.get("http://localhost:8000/post/", {
+    //   headers: {
+    //     Authorization: `Token ${idtoken}`,
+    //     "Content-Type": "application/json",
+    //   },
+    //   withCredentials: true, // If you need to send cookies
+    // });
     let data = await response.json();
     console.log(data);
     setPosts(data);
   };
+  // console.log(idtoken);
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -60,14 +85,14 @@ export default function Fyp() {
               >
                 <div className="flex items-center gap-x-4 text-xs">
                   <time dateTime={"2020-03-16"} className="text-gray-500">
-                    {"Mar 16, 2020"}
+                    {parseDate(post.created_at).date}
                   </time>
                   <Link
                     to="/post"
                     state={post}
                     className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
                   >
-                    r/{post.title}
+                    {post.community}
                   </Link>
                 </div>
                 <div className="group relative">
@@ -78,13 +103,13 @@ export default function Fyp() {
                     </Link>
                   </h3>
                   <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                    {post.description}
+                    {post.content}
                   </p>
                 </div>
                 <div className="relative mt-8 flex items-center gap-x-4">
                   <img
                     src={
-                      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      post.user.picture
                     }
                     alt=""
                     className="h-10 w-10 rounded-full bg-gray-50"
@@ -94,13 +119,12 @@ export default function Fyp() {
                       <a href={"#"}>
                         <span className="absolute inset-0" />
                         {/* {post.author.name} */}
-                        Rohan
+                        {post.user.name}
                       </a>
                     </p>
-                    <p className="text-gray-600">
-                      {/* {post.author.role} */}
+                    {/* <p className="text-gray-600">
                       Reader
-                    </p>
+                    </p> */}
                   </div>
                 </div>
                 <div className="flex flex-row justify-between">
@@ -121,7 +145,7 @@ export default function Fyp() {
                     </svg>
                   </div>
                   <div className="p-5">
-                  <svg
+                    <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
