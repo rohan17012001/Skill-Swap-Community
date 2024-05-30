@@ -14,6 +14,7 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
+import Logo from "../assets/skillshare.png"
 import Login from "../pages/Login";
 // import { Link } from 'react-router-dom'
 import { Link, useNavigate } from "react-router-dom";
@@ -75,8 +76,8 @@ export default function Header() {
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              className="h-14 w-auto"
+              src={Logo}
               alt=""
             />
           </a>
@@ -156,16 +157,16 @@ export default function Header() {
           </Popover>
 
           <a
-            href="./pages/Home"
+            href="/Home"
             className="text-sm font-semibold leading-6 text-gray-900"
           >
-            Features
+            For You
+          </a>
+          <a href="/communities" className="text-sm font-semibold leading-6 text-gray-900">
+            Communities
           </a>
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Marketplace
-          </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Company
+            Sessions
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -270,7 +271,7 @@ export default function Header() {
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Company
+                  Sessions
                 </a>
               </div>
               <div className="py-6">

@@ -18,9 +18,9 @@ import { useLocation } from "react-router-dom";
 import { useUser } from "../../context/authContext";
 import { redirect } from "react-router-dom";
 
-export default function Createpost() {
+export default function Createcommunity() {
   const location = useLocation();
-  const community = location.state;
+//   const community = location.state;
   const { user } = useUser();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -36,7 +36,7 @@ export default function Createpost() {
   let handleCreatePost = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("community", community.name);
+    // formData.append("community", community.name);
     formData.append("title", title);
     formData.append("content", content);
     if (image) {
@@ -62,11 +62,10 @@ export default function Createpost() {
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Create a Post in {community.name}
+            Create a community
           </h2>
           <p className="mt-2 text-lg leading-8 text-gray-600">
-            This post will be shared with the community. Make sure it's relevant
-            and appropriate.
+            Create a community where  you can share your thoughts and ideas with others, and others can do the same with you.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -75,7 +74,7 @@ export default function Createpost() {
                 htmlFor="username"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Title
+                Group Title
               </label>
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
@@ -133,7 +132,44 @@ export default function Createpost() {
                 htmlFor="cover-photo"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Add a photo
+                Profile Picture
+              </label>
+              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                <div className="text-center">
+                  <PhotoIcon
+                    className="mx-auto h-12 w-12 text-gray-300"
+                    aria-hidden="true"
+                  />
+                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                    <label
+                      htmlFor="file-upload"
+                      className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                    >
+                      <span>Upload a file</span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        accept="image/*"
+                        capture="camera"
+                        className="sr-only"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                    {/* <p className="pl-1">or drag and drop</p> */}
+                  </div>
+                  <p className="text-xs leading-5 text-gray-600">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-span-full my-2">
+              <label
+                htmlFor="cover-photo"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Banner Picture
               </label>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                 <div className="text-center">

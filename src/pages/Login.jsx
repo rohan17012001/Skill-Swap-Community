@@ -14,6 +14,7 @@
 */
 import { useState } from "react";
 import { auth } from "../firebase/firebase";
+import Logo from "../assets/skillshare.png"
 import {
   doSignInWithEmailAndPassword,
   doSignInWithGoogle,
@@ -94,8 +95,9 @@ const {user,setUser} = useUser();
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
-              className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              className="mx-auto h-20 w-auto"
+              // src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              src={Logo}
               alt="Your Company"
             />
             <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

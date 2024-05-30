@@ -1,4 +1,5 @@
 import { StarIcon } from '@heroicons/react/20/solid'
+import { useState, useEffect } from 'react';
 
 const reviews = [
   {
@@ -40,7 +41,40 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Comments() {
+export default function Comments({postid, parent}) {
+  console.log("Post ID: "+postid);
+  const [comments, setComments] = useState([]);
+  const idtoken = localStorage.getItem("token");
+  useEffect(() => {
+    getComments();
+  }, []);
+  let getComments = async () => {
+    let params=new URLSearchParams();
+    params.append("post", postid);
+    if(parent!=null){
+      params.append("parent", parent);
+    }
+    const baseURL="http://localhost:8000/post/comments/";
+    const urlWithParams=`${baseURL}?${params.toString()}`
+    let response = await fetch(
+      urlWithParams,
+      {
+        // mode: 'cors',
+        // credentials: "include",
+        method: "GET",
+        headers: {
+          Authorization: `Token ${idtoken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    let data = await response.json();
+    // console.log("Community Posts are: "+JSON);
+    // console.log(data)
+
+    setComments(data);
+    console.log("Comments: "+comments);
+  };
   return (
     <div className="bg-white py-5">
       <div>
@@ -49,10 +83,11 @@ export default function Comments() {
         </h2>
 
         <div className="space-y-10">
-          {reviews.map((review) => (
+          {comments.length === 0 && (<p>Hmmm, suspiciously empty...</p>)}
+          {comments.map((review) => (
             <div key={review.id} className="flex flex-col sm:flex-row">
               <div className="order-2 mt-6 sm:ml-16 sm:mt-0">
-                <h3 className="text-sm font-medium text-gray-900">{review.title}</h3>
+                {/* <h3 className="text-sm font-medium text-gray-900">{review.content}</h3> */}
                 <p className="sr-only">{review.rating} out of 5 stars</p>
 
                 <div
@@ -62,10 +97,10 @@ export default function Comments() {
               </div>
 
               <div className="order-1 flex items-center sm:flex-col sm:items-start">
-                <img src={review.avatarSrc} alt={review.author} className="h-12 w-12 rounded-full" />
+                <img src={review.user.picture} alt={review.user.name} className="h-12 w-12 rounded-full" />
 
                 <div className="ml-4 sm:ml-0 sm:mt-4">
-                  <p className="text-sm font-medium text-gray-900">{review.author}</p>
+                  <p className="text-sm font-medium text-gray-900">{review.user.name}</p>
                   {/* <div className="mt-2 flex items-center">
                     {[0, 1, 2, 3, 4].map((rating) => (
                       <StarIcon

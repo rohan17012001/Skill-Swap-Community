@@ -77,10 +77,14 @@ const UserProvider = ({ children }) => {
       if (user) {
         setUser(user);
         //   console.log(user.getIdToken())
-        user.getIdToken().then((idToken) => {
-        //   console.log(idToken);
-          localStorage.setItem("token", idToken);
-        });
+        const helper = async () => {
+
+          await user.getIdToken().then((idToken) => {
+            //   console.log(idToken);
+            localStorage.setItem("token", idToken);
+          });
+        }
+        helper();
         //   localStorage.setItem('user', JSON.stringify(user));
       } else {
         setUser(null);

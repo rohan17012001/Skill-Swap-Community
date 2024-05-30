@@ -5,42 +5,117 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Comments from "../components/Comments";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faThumbsUp as faThumbsUpRegular,
+  faCommentDots,
+} from "@fortawesome/free-regular-svg-icons";
+import { faThumbsUp as faThumbsUpSolid } from "@fortawesome/free-solid-svg-icons";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Posts() {
-  const [comments, setComments] = useState([]);
-  useEffect(() => {
-    getcomments();
-  }, []);
-  let getcomments = async () => {
-    let response = await fetch("https://dummyjson.com/comments", {
-      // mode: 'cors',
-      // credentials: "include",
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    let data = await response.json();
-    console.log(data);
-    setComments(data);
+  // const [comments, setComments] = useState([]);
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [comment, setComment] = useState("");
+  const handleCommentClick = () => {
+    setShowCommentBox((prevState) => !prevState);
+    console.log("prevState ", showCommentBox);
   };
+  useEffect(() => {
+    // getComments();
+  }, []);
+  // const [communityDetails, setCommunityDetails] = useState([]);
+  // useEffect(() => {
+  //   getCommunityDetails();
+  // }, []);
+
+  const idtoken = localStorage.getItem("token");
+  // let getComments = async () => {
+  //   let response = await fetch(
+  //     "http://localhost:8000/post/community?" +
+  //       new URLSearchParams({
+  //         community_pk: community.name,
+  //       }),
+  //     {
+  //       // mode: 'cors',
+  //       // credentials: "include",
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Token ${idtoken}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   let data = await response.json();
+  //   // console.log("Community Posts are: "+JSON);
+  //   // console.log(data)
+
+  //   setCommunityDetails(data);
+  // };
+
   const location = useLocation();
   const post = location.state;
   console.log(post);
+
+  const VotePostMutation = useMutation({
+    mutationFn: async ({ id, val }) => {
+      console.log(id, val, "mutationFn");
+      let response = await fetch("http://localhost:8000/post/vote/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Token " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          post: id,
+          value: val,
+        }),
+      });
+      let data = JSON.stringify(await response.json());
+      console.log(data);
+      return data;
+    },
+    onMutate: async (res) => {
+      console.log("onMutate", res);
+    },
+    onError: async (error, variables, context) => {
+      console.log("onError");
+      console.log(error, variables, context);
+    },
+    onSuccess: async (data, variables, context) => {
+      console.log("onSuccess");
+    },
+  });
+
+  let votePost = async (id, val) => {
+    let response = await fetch("http://localhost:8000/post/vote/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Token " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        post: id,
+        value: val,
+      }),
+    });
+    let data = await response.json();
+    console.log(data);
+  };
   return (
     <>
-    <div className="bg-white px-6 py-32 lg:px-8">
-      <div className="mx-auto max-w-3xl text-base leading-7 text-gray-700">
-        <p className="text-base font-semibold leading-7 text-indigo-600">
+      <div className="bg-white px-6 py-32 lg:px-8">
+        <div className="mx-auto max-w-3xl text-base leading-7 text-gray-700">
+          {/* <p className="text-base font-semibold leading-7 text-indigo-600">
           Introducing
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          JavaScript for Beginners
-        </h1>
-        <p className="mt-6 text-xl leading-8">{post.title}</p>
-        <div className="mt-10 max-w-2xl">
-          <p>{post.body}</p>
-          <ul role="list" className="mt-8 max-w-xl space-y-8 text-gray-600">
+        </p> */}
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            {post.title}
+          </h1>
+          {/* <p className="mt-6 text-xl leading-8">{post.title}</p> */}
+          <div className="mt-10 max-w-2xl">
+            <p>{post.body}</p>
+            {/* <ul role="list" className="mt-8 max-w-xl space-y-8 text-gray-600">
             <li className="flex gap-x-3">
               <CheckCircleIcon
                 className="mt-1 h-5 w-5 flex-none text-indigo-600"
@@ -77,15 +152,11 @@ export default function Posts() {
                 Et magna sit morbi lobortis.
               </span>
             </li>
-          </ul>
-          <p className="mt-8">
-            Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis
-            odio id et. Id blandit molestie auctor fermentum dignissim. Lacus
-            diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices
-            hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem
-            vel integer orci.
-          </p>
-          <h2 className="mt-16 text-2xl font-bold tracking-tight text-gray-900">
+          </ul> */}
+            {/* <p className="mt-8">
+            {post.content}
+          </p> */}
+            {/* <h2 className="mt-16 text-2xl font-bold tracking-tight text-gray-900">
             From beginner to expert in 3 hours
           </h2>
           <p className="mt-6">
@@ -95,110 +166,118 @@ export default function Posts() {
             tellus mauris, ultrices mauris. Tincidunt enim cursus ridiculus mi.
             Pellentesque nam sed nullam sed diam turpis ipsum eu a sed convallis
             diam.
-          </p>
-          <figure className="mt-10 border-l border-indigo-600 pl-9">
-            <blockquote className="font-semibold text-gray-900">
-              <p>
-                “Vel ultricies morbi odio facilisi ultrices accumsan donec lacus
-                purus. Lectus nibh ullamcorper ac dictum justo in euismod. Risus
-                aenean ut elit massa. In amet aliquet eget cras. Sem volutpat
-                enim tristique.”
-              </p>
-            </blockquote>
-            <figcaption className="mt-6 flex gap-x-4">
+          </p> */}
+            <figure className="mt-10 border-l border-indigo-600 pl-9">
+              <blockquote className="font-semibold text-gray-900">
+                <p>“{post.content}”</p>
+              </blockquote>
+              <figcaption className="mt-6 flex gap-x-4">
+                <img
+                  className="h-6 w-6 flex-none rounded-full bg-gray-50"
+                  src={post.user.picture}
+                  alt=""
+                />
+                <div className="text-sm leading-6">
+                  <strong className="font-semibold text-gray-900">
+                    {post.user.name}
+                  </strong>{" "}
+                  {/* – Marketing Manager */}
+                </div>
+              </figcaption>
+            </figure>
+            {/* <p className="mt-10">
+            Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus
+            enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor
+            praesent donec est. Odio penatibus risus viverra tellus varius sit
+            neque erat velit.
+          </p> */}
+          </div>
+          {post.image && (
+            <figure className="mt-16">
               <img
-                className="h-6 w-6 flex-none rounded-full bg-gray-50"
-                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                className="aspect-video rounded-xl bg-gray-50 object-cover"
+                src={post.image}
                 alt=""
               />
-              <div className="text-sm leading-6">
-                <strong className="font-semibold text-gray-900">
-                  Maria Hill
-                </strong>{" "}
-                – Marketing Manager
-              </div>
-            </figcaption>
-          </figure>
-          <p className="mt-10">
-            Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus
-            enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor
-            praesent donec est. Odio penatibus risus viverra tellus varius sit
-            neque erat velit.
-          </p>
+              <figcaption className="mt-4 flex gap-x-2 text-sm leading-6 text-gray-500">
+                <InformationCircleIcon
+                  className="mt-0.5 h-5 w-5 flex-none text-gray-300"
+                  aria-hidden="true"
+                />
+                Faucibus commodo massa rhoncus, volutpat.
+              </figcaption>
+            </figure>
+          )}
+          {/* <div className="mt-16 max-w-2xl">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+              Everything you need to get up and running
+            </h2>
+            <p className="mt-6">
+              Purus morbi dignissim senectus mattis adipiscing. Amet, massa quam
+              varius orci dapibus volutpat cras. In amet eu ridiculus leo
+              sodales cursus tristique. Tincidunt sed tempus ut viverra
+              ridiculus non molestie. Gravida quis fringilla amet eget dui
+              tempor dignissim. Facilisis auctor venenatis varius nunc, congue
+              erat ac. Cras fermentum convallis quam.
+            </p>
+            <p className="mt-8">
+              Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus
+              enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor
+              praesent donec est. Odio penatibus risus viverra tellus varius sit
+              neque erat velit.
+            </p>
+          </div> */}
         </div>
-        <figure className="mt-16">
-          <img
-            className="aspect-video rounded-xl bg-gray-50 object-cover"
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&w=1310&h=873&q=80&facepad=3"
-            alt=""
-          />
-          <figcaption className="mt-4 flex gap-x-2 text-sm leading-6 text-gray-500">
-            <InformationCircleIcon
-              className="mt-0.5 h-5 w-5 flex-none text-gray-300"
-              aria-hidden="true"
+        <div className="grid grid-cols-2">
+          <div className="p-5">
+            <FontAwesomeIcon
+              className="size-7"
+              icon={post.vote ? faThumbsUpSolid : faThumbsUpRegular}
+              onClick={() => {
+                if (post.vote !== null) {
+                  VotePostMutation.mutate({ id: post.id, val: 0 });
+                } else {
+                  VotePostMutation.mutate({ id: post.id, val: 1 });
+                }
+              }}
             />
-            Faucibus commodo massa rhoncus, volutpat.
-          </figcaption>
-        </figure>
-        <div className="mt-16 max-w-2xl">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Everything you need to get up and running
-          </h2>
-          <p className="mt-6">
-            Purus morbi dignissim senectus mattis adipiscing. Amet, massa quam
-            varius orci dapibus volutpat cras. In amet eu ridiculus leo sodales
-            cursus tristique. Tincidunt sed tempus ut viverra ridiculus non
-            molestie. Gravida quis fringilla amet eget dui tempor dignissim.
-            Facilisis auctor venenatis varius nunc, congue erat ac. Cras
-            fermentum convallis quam.
-          </p>
-          <p className="mt-8">
-            Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus
-            enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor
-            praesent donec est. Odio penatibus risus viverra tellus varius sit
-            neque erat velit.
-          </p>
+          </div>
+          <div className="p-5">
+            <FontAwesomeIcon
+              className="size-7"
+              icon={faCommentDots}
+              onClick={handleCommentClick}
+            />
+          </div>
         </div>
       </div>
-      <div className="flex flex-row justify-between">
-        <div className="p-5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
+      {showCommentBox && (
+        <div className="grid grid-cols-5 gap-4 mb-8">
+          <div className="col-span-4">
+            <textarea
+              id="comment"
+              name="comment"
+              // rows={3}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              defaultValue={""}
+              placeholder="Write a comment..."
+              onChange={(e) => setComment(e.target.value)}
             />
-          </svg>
+          </div>
+          <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Save
+        </button>
         </div>
-        <div className="p-5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">Comments</h2>
+      )}
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+          Comments
+        </h2>
         {/* <h2 className="left-0">Comments</h2> */}
-        <Comments />
+        <Comments postid={post.id} parent={null} />
       </div>
     </>
   );

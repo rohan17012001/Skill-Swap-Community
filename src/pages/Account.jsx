@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, Switch } from '@headlessui/react'
 import { Bars3Icon } from '@heroicons/react/20/solid'
+// import { useUser } from '../../context/authContext'
 import { useUser } from '../../context/authContext'
 import {
   BellIcon,
@@ -19,8 +20,8 @@ const navigation = [
   { name: 'Expenses', href: '#' },
 ]
 const secondaryNavigation = [
-  { name: 'General', href: '#', icon: UserCircleIcon, current: true },
-  { name: 'Security', href: '#', icon: FingerPrintIcon, current: false },
+  { name: 'For You', href: '/home', icon: UserCircleIcon, current: true },
+  { name: 'Communities', href: '/communities', icon: FingerPrintIcon, current: false },
   { name: 'Notifications', href: '#', icon: BellIcon, current: false },
   { name: 'Plan', href: '#', icon: CubeIcon, current: false },
   { name: 'Billing', href: '#', icon: CreditCardIcon, current: false },
@@ -35,6 +36,27 @@ export default function Account() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
   const { user } = useUser()
+  // console.log(Object.keys(user))
+  // console.log(user.displayName+"hello")
+  const [account, setAccount] = useState({})
+  useEffect(() => {
+    getAccount()
+  }, [])
+  console.log(localStorage.getItem('token'))
+  let getAccount = async () => { 
+    const response = await fetch('http://localhost:8000/user/', 
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+        'Authorization': `Header ${localStorage.getItem('token')}`
+      }
+    }
+    )
+    const data = await response.json()
+    setAccount(data)
+  }
+  console.log(account)
 
   return (
     <>
@@ -151,7 +173,8 @@ export default function Account() {
                 <div className="pt-6 sm:flex">
                   <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Full name</dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">{user.displayName}</div>
+                    <div className="text-gray-900">{account.name}</div>
+                    {/* {console.log(user.displayName)} */}
                     <button type="button" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Update
                     </button>
@@ -160,7 +183,7 @@ export default function Account() {
                 <div className="pt-6 sm:flex">
                   <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Email address</dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">{user.email}</div>
+                    <div className="text-gray-900">{account.email}</div>
                     <button type="button" className="font-semibold text-indigo-600 hover:text-indigo-500">
                       Update
                     </button>

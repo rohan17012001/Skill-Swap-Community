@@ -8,7 +8,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import Fyp from "./pages/FYP";
 import Posts from "./pages/Post";
@@ -18,6 +18,10 @@ import Login from "./pages/Login";
 import { auth } from "./firebase/firebase";
 import Createpost from "./components/Createpost";
 import { context } from "../context/context";
+import Communities from "./pages/Communities";
+import Temp from "./pages/Temp";
+import CommunityPage from "./pages/CommunityPage";
+import Createcommunity from "./pages/CreateCommunity";
 // import { useAuth } from '../context/authContext'
 import "./App.css";
 // const { userLoggedIn } = useAuth();
@@ -39,12 +43,16 @@ function App() {
         { path: "invalid", Component: Notlogin },
         { path: "account", Component: Account },
         { path: "login", Component: Login },
-        { path: "create", Component: Createpost}
+        { path: "create", Component: Createpost},
+        { path: "communities", Component: Communities},
+        { path: "community", Component: CommunityPage},
+        { path: "temp", Component: Temp},
+        { path: "createcommunity", Component: Createcommunity}
       ],
     },
     {
       path: "*",
-      element: <div>404 Not found</div>,
+      element: < Notlogin />,
     },
     // {
     //   path: '/home',
