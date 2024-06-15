@@ -15,6 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export default function Posts() {
   // const [comments, setComments] = useState([]);
+  const url = import.meta.env.VITE_URL_NAME;
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [comment, setComment] = useState("");
   const handleCommentClick = () => {
@@ -55,12 +56,13 @@ export default function Posts() {
 
   const location = useLocation();
   const post = location.state;
+  const [like, setLike] = useState(post.vote);
   console.log(post);
 
   const VotePostMutation = useMutation({
     mutationFn: async ({ id, val }) => {
       console.log(id, val, "mutationFn");
-      let response = await fetch("http://localhost:8000/post/vote/", {
+      let response = await fetch(`${url}/post/vote/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +90,7 @@ export default function Posts() {
   });
 
   let votePost = async (id, val) => {
-    let response = await fetch("http://localhost:8000/post/vote/", {
+    let response = await fetch(`${url}/post/vote/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,6 +104,22 @@ export default function Posts() {
     let data = await response.json();
     console.log(data);
   };
+  let commentOnPost = async () => {
+    let response = await fetch(`${url}/post/comments/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Token " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        post: post.id,
+        content: comment,
+      }),
+    });
+    let data = await response.json();
+    console.log(data);
+    window.location.reload();
+  };
   return (
     <>
       <div className="bg-white px-6 py-32 lg:px-8">
@@ -113,7 +131,7 @@ export default function Posts() {
             {post.title}
           </h1>
           {/* <p className="mt-6 text-xl leading-8">{post.title}</p> */}
-          <div className="mt-10 max-w-2xl">
+          <div className="mt-10 max-w-3xl">
             <p>{post.body}</p>
             {/* <ul role="list" className="mt-8 max-w-xl space-y-8 text-gray-600">
             <li className="flex gap-x-3">
@@ -193,20 +211,15 @@ export default function Posts() {
           </p> */}
           </div>
           {post.image && (
-            <figure className="mt-16">
-              <img
-                className="aspect-video rounded-xl bg-gray-50 object-cover"
-                src={post.image}
-                alt=""
-              />
-              <figcaption className="mt-4 flex gap-x-2 text-sm leading-6 text-gray-500">
-                <InformationCircleIcon
-                  className="mt-0.5 h-5 w-5 flex-none text-gray-300"
-                  aria-hidden="true"
+            <div className="flex justify-center items-center">
+              <figure className="mt-16">
+                <img
+                  className="aspect-video rounded-xl  bg-gray-50 object-cover mb-5"
+                  src={post.image}
+                  alt=""
                 />
-                Faucibus commodo massa rhoncus, volutpat.
-              </figcaption>
-            </figure>
+              </figure>
+            </div>
           )}
           {/* <div className="mt-16 max-w-2xl">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -232,13 +245,14 @@ export default function Posts() {
           <div className="p-5">
             <FontAwesomeIcon
               className="size-7"
-              icon={post.vote ? faThumbsUpSolid : faThumbsUpRegular}
+              icon={like ? faThumbsUpSolid : faThumbsUpRegular}
               onClick={() => {
                 if (post.vote !== null) {
                   VotePostMutation.mutate({ id: post.id, val: 0 });
                 } else {
                   VotePostMutation.mutate({ id: post.id, val: 1 });
                 }
+                setLike((prevState) => !prevState);
               }}
             />
           </div>
@@ -265,11 +279,12 @@ export default function Posts() {
             />
           </div>
           <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Save
-        </button>
+            type="submit"
+            className="rounded-md bg-indigo-600 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={commentOnPost}
+          >
+            Save
+          </button>
         </div>
       )}
       <div>

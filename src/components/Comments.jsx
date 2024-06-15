@@ -42,6 +42,7 @@ function classNames(...classes) {
 }
 
 export default function Comments({postid, parent}) {
+  const url=import.meta.env.VITE_URL_NAME
   console.log("Post ID: "+postid);
   const [comments, setComments] = useState([]);
   const idtoken = localStorage.getItem("token");
@@ -54,7 +55,7 @@ export default function Comments({postid, parent}) {
     if(parent!=null){
       params.append("parent", parent);
     }
-    const baseURL="http://localhost:8000/post/comments/";
+    const baseURL=`${url}/post/comments/`;
     const urlWithParams=`${baseURL}?${params.toString()}`
     let response = await fetch(
       urlWithParams,

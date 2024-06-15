@@ -28,6 +28,8 @@ import { useUser } from "../../context/authContext";
 import Google from "../assets/svg/google.svg";
 
 export default function Login() {
+  const url=import.meta.env.VITE_URL_NAME
+  console.log(url)
   const navigate = useNavigate();
   // const { isUserLoggedIn, currentUser } = useUser();
 const {user,setUser} = useUser();

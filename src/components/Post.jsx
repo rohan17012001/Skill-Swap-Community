@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsUp, faCommentDots } from "@fortawesome/free-regular-svg-icons";
+import { faThumbsUp as faThumbsUpRegular, faCommentDots } from "@fortawesome/free-regular-svg-icons";
+import { faThumbsUp as faThumbsUpSolid } from "@fortawesome/free-solid-svg-icons";
 import { format, parseISO } from "date-fns";
 
 function Post({ post }) {
+  const url=import.meta.env.VITE_URL_NAME
   function parseDate(datestr) {
     const dateObj = new Date(datestr);
 
@@ -73,7 +75,7 @@ function Post({ post }) {
       </div>
       <div className="flex flex-row justify-between">
         <div className="p-5">
-          <FontAwesomeIcon className="size-7" icon={faThumbsUp} />
+          <FontAwesomeIcon className="size-7" icon={post.vote ? faThumbsUpSolid : faThumbsUpRegular} />
         </div>
         <div className="p-5">
           <FontAwesomeIcon className="size-7" icon={faCommentDots} />

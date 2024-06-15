@@ -39,6 +39,7 @@ function parseDate(datestr){
 }
 
 export default function Fyp() {
+  const url=import.meta.env.VITE_URL_NAME
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     getposts();
@@ -46,7 +47,7 @@ export default function Fyp() {
   const idtoken = localStorage.getItem("token");
   // console.log(idtoken)
   let getposts = async () => {
-    let response = await fetch("http://localhost:8000/post/", {
+    let response = await fetch(`${url}/post/`, {
       mode: 'cors',
       // credentials: "include",
       method: "GET",

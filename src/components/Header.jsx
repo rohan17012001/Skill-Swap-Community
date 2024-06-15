@@ -62,6 +62,7 @@ function classNames(...classes) {
 }
 
 export default function Header() {
+  const url=import.meta.env.VITE_URL_NAME
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useUser();
   console.log("user: ",user);

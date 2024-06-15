@@ -22,6 +22,7 @@ const posts = [
 ]
 
 export default function Example() {
+  const url=import.meta.env.VITE_URL_NAME;
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">

@@ -1,6 +1,7 @@
 import React from "react"
 
 export default function Notlogin() {
+  const url=import.meta.env.VITE_URL_NAME
     return (
       <>
         {/*

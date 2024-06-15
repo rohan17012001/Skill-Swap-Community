@@ -16,9 +16,13 @@ import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useUser } from "../../context/authContext";
+import { Navigate } from "react-router-dom";
 import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 export default function Createpost() {
+  const url=import.meta.env.VITE_URL_NAME
   const location = useLocation();
   const community = location.state;
   const { user } = useUser();
@@ -26,6 +30,7 @@ export default function Createpost() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState('');
   const idtoken = localStorage.getItem("token");
+  let history=useNavigate();
   // console.log(idtoken)
   function handleFileChange(event){
     console.log("putting image")
@@ -42,7 +47,7 @@ export default function Createpost() {
     if (image) {
       formData.append("image", image);
     }
-    let response = await fetch("http://localhost:8000/post/", {
+    let response = await fetch(`${url}/post/`, {
       mode: "cors",
       // credentials: "include",
       method: "POST",
@@ -54,8 +59,11 @@ export default function Createpost() {
     });
     let data = await response.json();
     console.log(data);
-    redirect("/home");
+    alert("Post created successfully!");
+    // redirect("/home");
+    // < Navigate to = "/community" state={community} />
     // setPosts(data);
+    history(-1)
   };
   return (
     <form>
@@ -157,7 +165,7 @@ export default function Createpost() {
                         onChange={handleFileChange}
                       />
                     </label>
-                    {/* <p className="pl-1">or drag and drop</p> */}
+                    <p className="pl-1">{image.name}</p>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">
                     PNG, JPG, GIF up to 10MB

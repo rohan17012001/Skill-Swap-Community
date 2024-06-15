@@ -14,6 +14,7 @@ function parseDate(datestr) {
 }
 
 const CommunityPage = () => {
+  const url=import.meta.env.VITE_URL_NAME
   const location = useLocation();
   const community = location.state;
   console.log(community);
@@ -25,7 +26,7 @@ const CommunityPage = () => {
   const idtoken = localStorage.getItem("token");
   let getCommunityDetails = async () => {
     let response = await fetch(
-      "http://localhost:8000/post/community?" +
+      `${url}/post/community?` +
         new URLSearchParams({
           community_pk: community.name,
         }),
@@ -46,7 +47,7 @@ const CommunityPage = () => {
     setCommunityDetails(data);
   };
   let handleJoinCommunity = async () => {
-    let response = await fetch("http://localhost:8000/community/members/",{
+    let response = await fetch(`${url}/community/members/`,{
       method: "POST",
       headers: {
         Authorization: `Token ${idtoken}`,
@@ -58,7 +59,7 @@ const CommunityPage = () => {
     });
     let data=await response.json();
     if(response.data.success){
-      setIsMember(true);
+      setIsMember((prev)=>!prev)
     } 
   };
   console.log(communityDetails);
@@ -98,7 +99,7 @@ const CommunityPage = () => {
             type="submit"
             onClick={handleJoinCommunity}
             className="rounded-md mt-10 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            disabled={isMember}
+            // disabled={isMember}
           >
             {isMember ? "Joined" : "Join"}
           </button>

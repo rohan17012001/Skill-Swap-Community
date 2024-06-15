@@ -40,6 +40,7 @@ function parseDate(datestr){
 }
 
 export default function Communities() {
+  const url=import.meta.env.VITE_URL_NAME
   const [communities, setCommunities] = useState([]);
   useEffect(() => {
     getCommunities();
@@ -47,7 +48,7 @@ export default function Communities() {
   const idtoken = localStorage.getItem("token");
   // console.log(idtoken)
   let getCommunities = async () => {
-    let response = await fetch("http://localhost:8000/community/", {
+    let response = await fetch(`${url}/community/`, {
       mode: 'cors',
       // credentials: "include",
       method: "GET",
@@ -78,6 +79,14 @@ export default function Communities() {
           <p className="mt-2 text-lg leading-8 text-gray-600">
             Join a community to meet like-minded individuals !
           </p>
+          <Link to="/createcommunity">
+          <button
+              type="submit"
+              className="rounded-md mt-10 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Create a new Community
+            </button>
+            </Link>
           <div className="mt-10 space-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16">
             {communities.map((community) => 
              

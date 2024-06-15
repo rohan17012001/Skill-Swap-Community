@@ -4,8 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faCommentDots } from "@fortawesome/free-regular-svg-icons";
 import CommunityPage from "../pages/CommunityPage";
 import { format, parseISO } from "date-fns";
+import { useState } from "react";
 
 function Community({ community }) {
+  const url=import.meta.env.VITE_URL_NAME
   function parseDate(datestr) {
     const dateObj = new Date(datestr);
 
@@ -13,6 +15,7 @@ function Community({ community }) {
     const time = dateObj.toISOString().split("T")[1].split(".")[0];
     return { date, time };
   }
+  const [isMember, setIsMember] = useState(community.is_member);
   return (
     <div className="flex flex-row gap-x-6">
       {community.profile_image && (
@@ -74,7 +77,7 @@ function Community({ community }) {
         </div>
         <div className="flex flex-row justify-between">
           <div className="p-5">
-            {community.is_member ? (
+            {isMember ? (
               <button
                 type="button"
                 className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"

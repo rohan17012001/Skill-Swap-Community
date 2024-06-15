@@ -12,6 +12,7 @@ const navigation = [
 ]
 
 export default function Home() {
+  const url=import.meta.env.VITE_URL_NAME
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const loggedIn = useContext(context)
   // console.log(loggedIn.loggedIn)
